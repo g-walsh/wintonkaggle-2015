@@ -23,3 +23,21 @@ test <- transform(test, Timepoint=as.numeric(sub('Ret_','',Timepoint)))
 
 # ggplot(test, aes(x=Timepoint, y=price, col=id)) + geom_point() + geom_line()
 ggplot(test[test$id==1,], aes(x=Timepoint, y=price, col=id)) + geom_point() + geom_line()
+
+## Now create the long version of the whole data frame
+## Define the long data frame with only the normal day data - This conversion will take time so save as .RData afterwards
+
+dflong <- df[,33:length(df)-4]
+dflong <- reshape(dflong,
+                  direction = "long",
+                  varying = list(names(dflong)),
+                  v.names = "price",
+                  timevar = "Timepoint",
+                  times = names(dflong))
+
+dflong <- na.omit(dflong)
+dflong <- transform(dflong, Timepoint=as.numeric(sub('Ret_','',Timepoint)))
+
+save(dflong, file='testlong.RData')
+
+ggplot(dflong[dflong$id==2500,], aes(x=Timepoint, y=price, col=id)) + geom_point() + geom_line()
