@@ -40,4 +40,19 @@ dflong <- transform(dflong, Timepoint=as.numeric(sub('Ret_','',Timepoint)))
 
 save(dflong, file='testlong.RData')
 
+## From now on we can import the .RData so we don't have to clean it every time!
+
+load("~/R/kaggle/wintonkaggle-2015/testlong.RData")
+
+## Plot the stock of choice as either timecourse or histogram
+
 ggplot(dflong[dflong$id==2500,], aes(x=Timepoint, y=price, col=id)) + geom_point() + geom_line()
+ggplot(dflong[dflong$id==2500,], aes(price)) + geom_histogram(bins=25)
+
+# Generate long list of (100) plots and store in a list and then plot them all
+
+pltlst <- list()
+
+for (i in 1:20) {pltlst[[i]] <- ggplot(dflong[dflong$id==i*100,], aes(price)) + geom_histogram(bins=25)}
+# multiplot(plotlist[[1]],plotlist[[2]],plotlist[[3]],plotlist[[4]],cols=2)
+multiplot(plotlist=pltlst, cols=5)
